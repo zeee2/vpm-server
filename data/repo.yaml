@@ -1,0 +1,8 @@
+# Repo metadata. Package zips are auto-discovered from data/zips/*.zip (built from projects/).
+# Set "packages: [...]" with file: entries only if you want to pin an explicit list.
+
+repo:
+  name: "Local Dev VPM"
+  id: "com.example.vpm.local"
+  author: "you@example.com"
+  public_base: "http://127.0.0.1:8080"
