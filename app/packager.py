@@ -127,10 +127,18 @@ def build_all_packages(
     return out
 
 
-def watch_should_ignore(path: str, ignore_meta: bool) -> bool:
+def watch_should_ignore(
+    path: str,
+    ignore_meta: bool,
+    *,
+    ignore_package_json: bool = False,
+) -> bool:
     base = os.path.basename(path)
     if base.startswith("."):
         return True
     if ignore_meta and path.endswith(".meta"):
+        return True
+    # When AUTO_BUMP_PATCH writes package.json, ignore that event or we get a rebuild loop.
+    if ignore_package_json and base == "package.json":
         return True
     return False

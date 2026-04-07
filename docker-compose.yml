@@ -7,7 +7,7 @@ services:
       PUBLIC_BASE: ${PUBLIC_BASE:-http://127.0.0.1:8080}
       DATA_DIR: /data
       PROJECTS_DIR: /data/projects
-      WATCH_DEBOUNCE_SEC: ${WATCH_DEBOUNCE_SEC:-2}
+      WATCH_DEBOUNCE_SEC: ${WATCH_DEBOUNCE_SEC:-4}
       AUTO_BUMP_PATCH: ${AUTO_BUMP_PATCH:-true}
       WATCH_IGNORE_META: ${WATCH_IGNORE_META:-true}
     volumes:

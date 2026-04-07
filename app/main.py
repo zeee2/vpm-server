@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, PlainTextResponse, Response
 
@@ -181,7 +181,7 @@ async def lifespan(app: FastAPI):
         os.environ.get("AUTO_BUMP_PATCH", "true"),
     )
 
-    debounce = float(os.environ.get("WATCH_DEBOUNCE_SEC", "2"))
+    debounce = float(os.environ.get("WATCH_DEBOUNCE_SEC", "4"))
     auto_bump = os.environ.get("AUTO_BUMP_PATCH", "true").lower() in ("1", "true", "yes")
     ignore_meta = os.environ.get("WATCH_IGNORE_META", "true").lower() in ("1", "true", "yes")
 
@@ -244,5 +244,15 @@ def download_package(filename: str) -> FileResponse:
 @app.post("/__reload")
 def reload_cache() -> dict[str, str]:
     """Clear listing cache (e.g. after manual zip edits)."""
+    invalidate_listing_cache()
+    return {"status": "ok"}
+
+
+@app.post("/__rebuild")
+def rebuild_all(
+    bump_patch: bool = Query(False, description="If true, bump semver patch in each package.json before zipping."),
+) -> dict[str, str]:
+    """Rebuild all zips from projects/ (e.g. after editing only package.json while watcher ignores it)."""
+    build_all_packages(PROJECTS_DIR, DATA_DIR / "zips", bump_patch=bump_patch)
     invalidate_listing_cache()
     return {"status": "ok"}

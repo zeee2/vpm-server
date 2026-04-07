@@ -74,7 +74,11 @@ class _DebouncedRebuild(FileSystemEventHandler):
             logger.exception("on_rebuild_done failed")
 
     def _consider(self, path_str: str) -> None:
-        if watch_should_ignore(path_str, self.ignore_meta):
+        if watch_should_ignore(
+            path_str,
+            self.ignore_meta,
+            ignore_package_json=self.auto_bump_patch,
+        ):
             return
         root = find_package_root_for_path(self.projects_dir, Path(path_str))
         if root is None:
